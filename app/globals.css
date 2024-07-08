@@ -18,16 +18,23 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
+  background: linear-gradient(to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer components {
+  .checkbox-container {
+    @apply block relative pl-8 cursor-pointer;
+  }
+
+  .checkbox {
+    @apply absolute left-1 h-4 w-4 bg-gray-300 hover:bg-gray-400 after:ml-1.5 after:m-cb after:h-2 after:w-1 after:border-r after:border-b after:border-white after:transform after:rotate-45 after:absolute after:hidden;
   }
 }

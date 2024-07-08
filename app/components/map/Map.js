@@ -36,7 +36,7 @@ function Map() {
         const fs = defaultControls().extend([new FullScreen()]);
         let options = {
             view: new View({
-                center: [73.7571, 18.4326],
+                center: [18.4235, -33.9218],
                 zoom: 14,
                 maxZoom: 28,
             }),
@@ -56,13 +56,56 @@ function Map() {
 
     useEffect(() => {
         if (map && setRasterList) {
-            const rasterObj = {
+            let PuneObj = {
                 id: 1,
-                url: "http://localhost:3000/pune_lulc_1/{z}/{x}/{y}.png",
+                url: "http://localhost:3000/tiles/pune_lulc/{z}/{x}/{y}.png",
                 name: "Pune Lulc",
-                is_visible: true
+                is_visible: true,
+                center: [73.7571, 18.4326]
             }
-            setRasterList([rasterObj])
+            let CapeTown1200Obj = {
+                id: 2,
+                url: "http://localhost:3000/tiles/Capetown_UTCI_2022_22_1200/{z}/{x}/{y}.png",
+                name: "CapeTown UTCI 2022_22 12:00",
+                is_visible: true,
+                center: [18.4235, -33.9218]
+            }
+            let CapeTown1500Obj = {
+                id: 3,
+                url: "http://localhost:3000/tiles/Capetown_UTCI_2022_22_1500/{z}/{x}/{y}.png",
+                name: "CapeTown UTCI 2022_22 12:00",
+                is_visible: true,
+                center: [18.4235, -33.9218]
+            }
+            let CapeTown1800Obj = {
+                id: 4,
+                url: "http://localhost:3000/tiles/Capetown_UTCI_2022_22_1800/{z}/{x}/{y}.png",
+                name: "CapeTown UTCI 2022_22 12:00",
+                is_visible: true,
+                center: [18.4235, -33.9218]
+            }
+            let CapeTownLulcObj = {
+                id: 5,
+                url: "http://localhost:3000/tiles/Capetown_LULC/{z}/{x}/{y}.png",
+                name: "CapeTown Lulc",
+                is_visible: true,
+                center: [18.4235, -33.9218]
+            }
+            let CapeTownTreeCanopyObj = {
+                id: 6,
+                url: "http://localhost:3000/tiles/Capetown_tree_canopy/{z}/{x}/{y}.png",
+                name: "CapeTown Tree Canopy",
+                is_visible: true,
+                center: [18.4235, -33.9218]
+            }
+            let CapeTownBuildingObj = {
+                id: 6,
+                url: "http://localhost:3000/tiles/capetown_buildings_raster/{z}/{x}/{y}.png",
+                name: "CapeTown Buildings",
+                is_visible: true,
+                center: [18.4235, -33.9218]
+            }
+            setRasterList([CapeTownBuildingObj])
         }
 
     }, [map, setRasterList])
