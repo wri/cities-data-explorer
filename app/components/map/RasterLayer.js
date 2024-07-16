@@ -23,24 +23,31 @@ export const RasterLayer = ({ rasterObj }) => {
     };
 
     useEffect(() => {
-        let url = "https://wri-s3-browser-test.s3.ap-south-1.amazonaws.com/" + rasterObj.path
-        const source = new GeoTIFF({
-            convertToRGB: true,
-            sources: [
-                {
-                    bands: [1, 2, 3],
-                    nodata: 0,
-                    url: url
-                },
-            ],
+        async function init() {
+            let url = `https://${process.env.NEXT_PUBLIC_BUCKET}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/` + rasterObj.path
+            const source = new GeoTIFF({
+                convertToRGB: true,
+                sources: [
+                    {
+                        bands: [1, 2, 3],
+                        nodata: 0,
+                        url: url
+                    },
+                ],
+                contextSettings: { willReadFrequently: true }
 
-        })
-        const layer = new TileLayer({
-            source: source,
-        });
-        setLayer(layer)
-        map?.addLayer(layer)
-        map?.setView(source.getView())
+            })
+            const layer = new TileLayer({
+                source: source,
+                maxZoom: 24,
+                minZoom: 6
+            });
+            setLayer(layer)
+            map?.addLayer(layer)
+            let v = await source.getView()
+            map.getView().setCenter(v.center)
+        }
+        init()
     }, [])
 
 

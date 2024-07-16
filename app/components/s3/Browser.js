@@ -23,7 +23,13 @@ export default function Browser() {
   }, [prefix])
 
   return (<div className='text-black flex flex-col px-4 gap-4 pt-2'>
-    {prefix !== "" && <span className='hover:cursor-pointer' onClick={() => setPrefix(prev)}>...</span>}
+    {prefix !== "" && <span className='hover:cursor-pointer' onClick={() => {
+      setPrev(prev => {
+        setPrefix(prev)
+        let prevPath = prev?.split("/").slice(0, -2).join("/")
+        return (prevPath.length > 0 ? prevPath : "")
+      })
+    }}>...</span>}
     {folders.map((f, i) => {
       return <Folder folder={f} key={i} setPrefix={setPrefix} setPrev={setPrev} />
     })}
