@@ -3,7 +3,7 @@
 import { useContext } from "react";
 import { FaRegFile } from "react-icons/fa";
 import { v4 as uuidv4 } from 'uuid';
-import { MapContext } from "../../page";
+import { MapContext } from "../../Base";
 
 
 export default function File({ file }) {

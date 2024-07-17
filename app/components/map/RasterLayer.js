@@ -1,4 +1,4 @@
-import { MapContext } from "../../page";
+import { MapContext } from "../../Base";
 
 // import XYZ from "ol/source/XYZ";
 import { useSortable } from "@dnd-kit/sortable";
@@ -31,16 +31,33 @@ export const RasterLayer = ({ rasterObj }) => {
                     {
                         bands: [1, 2, 3],
                         nodata: 0,
-                        url: url
+                        url: url,
+                        min: 1,
+                        max: 7,
                     },
                 ],
-                contextSettings: { willReadFrequently: true }
+                // normalize: false,
 
             })
             const layer = new TileLayer({
                 source: source,
-                maxZoom: 24,
-                minZoom: 6
+                maxZoom: 22,
+                minZoom: 12,
+                cacheSize: 512
+                // style: {
+                //     color: [
+                //         'case',
+                //         ['>', ['band', 2], 0],
+                //         [
+                //             'interpolate',
+                //             ['linear'],
+                //             ['band', 1],
+                //             0, [0, 89, 179, 0.01],
+                //             90, [255, 234, 0, 5.0],
+                //         ],
+                //         [0, 0, 0, 0],
+                //     ],
+                // },
             });
             setLayer(layer)
             map?.addLayer(layer)

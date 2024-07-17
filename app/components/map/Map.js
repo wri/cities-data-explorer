@@ -13,7 +13,7 @@ import {
     useEffect,
     useRef
 } from "react";
-import { MapContext } from "../../page";
+import { MapContext } from "../../Base";
 
 
 function Map() {
