@@ -4,13 +4,14 @@ import { MapContext } from "../../Base";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import TileLayer from 'ol/layer/WebGLTile.js';
-import GeoTIFF from 'ol/source/GeoTIFF.js';
+import GeoTIFFSource from 'ol/source/GeoTIFF.js';
 import { useContext, useEffect, useState } from "react";
 export const RasterLayer = ({ rasterObj }) => {
     const ctx = useContext(MapContext);
     const map = ctx?.map;
     const [layer, setLayer] = useState(null)
     const [opacity, setOpacity] = useState(1)
+    const [max, setMax] = useState(100)
     const { attributes, listeners, setNodeRef, transform, transition } =
         useSortable({ id: rasterObj.id });
     let t = null;
@@ -22,42 +23,61 @@ export const RasterLayer = ({ rasterObj }) => {
         transition,
     };
 
+    function getVariables() {
+        // const variables = {};
+        // for (const channel of channels) {
+        //   const selector = document.getElementById(channel);
+        //   variables[channel] = parseInt(selector.value, 10);
+
+        //   const inputId = `${channel}Max`;
+        //   const input = document.getElementById(inputId);
+        //   variables[inputId] = parseInt(input.value, 10);
+        // }
+        return { "redMax": max, "greenMax": max, "blueMax": max, "red": 1, "green": 1, "blue": 1 };
+    }
+
     useEffect(() => {
         async function init() {
             let url = `https://${process.env.NEXT_PUBLIC_BUCKET}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/` + rasterObj.path
-            const source = new GeoTIFF({
-                convertToRGB: true,
+            const source = new GeoTIFFSource({
                 sources: [
                     {
-                        bands: [1, 2, 3],
                         nodata: 0,
-                        url: url,
-                        min: 1,
-                        max: 7,
+                        url: url
                     },
                 ],
-                // normalize: false,
+                normalize: false,
 
             })
             const layer = new TileLayer({
                 source: source,
                 maxZoom: 22,
-                minZoom: 12,
-                cacheSize: 512
-                // style: {
-                //     color: [
-                //         'case',
-                //         ['>', ['band', 2], 0],
-                //         [
-                //             'interpolate',
-                //             ['linear'],
-                //             ['band', 1],
-                //             0, [0, 89, 179, 0.01],
-                //             90, [255, 234, 0, 5.0],
-                //         ],
-                //         [0, 0, 0, 0],
-                //     ],
-                // },
+                minZoom: 8,
+                cacheSize: 512,
+                style: {
+                    variables: getVariables(),
+                    color: [
+                        'case',
+                        ['==', ['band', 2], 0],
+                        '#00000000',
+                        [
+                            'array',
+                            ['/', ['band', ['var', 'red']], ['var', 'redMax']],
+                            ['/', ['band', ['var', 'green']], ['var', 'greenMax']],
+                            ['/', ['band', ['var', 'blue']], ['var', 'blueMax']],
+                            1,
+                        ]
+                    ],
+                    // variables: getVariables(),
+                    // color: [
+                    //     'array',
+                    //     ['/', ['band', ['var', 'red']], ['var', 'redMax']],
+                    //     ['/', ['band', ['var', 'green']], ['var', 'greenMax']],
+                    //     ['/', ['band', ['var', 'blue']], ['var', 'blueMax']],
+                    //     // ['/', ['band', 4], 0],
+                    //     1
+                    // ],
+                },
             });
             setLayer(layer)
             map?.addLayer(layer)
@@ -75,9 +95,19 @@ export const RasterLayer = ({ rasterObj }) => {
 
 
     const handleOpacity = (e) => {
-        let opacity = e.target.value;
-        layer.setOpacity(parseFloat(opacity));
-        setOpacity(parseFloat(opacity))
+        setMax(parseInt(e.target.value))
+        layer.updateStyleVariables(getVariables());
+        // let sf = layer.getSource().sourceInfo_[0]
+        // layer.getSource().sourceInfo_ = [{ ...sf, min: 1, max: 7 }]
+        // // layer.getSource().updateParams({ "min": 1, "max": 7 })
+        // layer.unvrender();
+        // layer.render();
+        // layer.getSource().refresh();
+        // console.log(sf.getAttributions())
+        // layer.source.min = 10
+        // let opacity = e.target.value;
+        // layer.setOpacity(parseFloat(opacity));
+        // setOpacity(parseFloat(opacity))
     };
 
     return (
@@ -98,9 +128,9 @@ export const RasterLayer = ({ rasterObj }) => {
             </div>
             <div>
                 <label>
-                    <input id="opacity-input" type="range" min="0" max="1" step="0.01"
+                    <input id="opacity-input" type="range" min="1" max="255" step="1"
                         onChange={handleOpacity}
-                        value={opacity}
+                        value={max}
                     />
                     <span id="opacity-output"
                     ></span>
