@@ -31,7 +31,6 @@ function Map() {
             }),
         });
 
-
         const fs = defaultControls().extend([new FullScreen()]);
         let options = {
             view: new View({

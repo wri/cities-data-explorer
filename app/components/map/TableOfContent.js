@@ -12,13 +12,15 @@ import {
     SortableContext,
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { MapContext } from "../../Base";
 import { RasterLayer } from "./RasterLayer";
 
-export const TableOfContent = ({ rasterList }) => {
+export const TableOfContent = () => {
     const [sortedLayers, setSortedLayers] = useState([]);
     const [activeLayerId, setActiveLayerId] = useState(null);
-
+    const ctx = useContext(MapContext);
+    const rasterList = ctx?.rasterList
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -75,7 +77,7 @@ export const TableOfContent = ({ rasterList }) => {
                 strategy={verticalListSortingStrategy}
             >
                 {sortedLayers.map((r, i) => {
-                    return < RasterLayer
+                    return <RasterLayer
                         key={`tbc-${i}-${r.id}`}
                         id={`tbc-${i}-${r.id}`}
                         rasterObj={r}

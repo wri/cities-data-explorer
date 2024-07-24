@@ -1,3 +1,4 @@
+import { IoCloseSharp } from "react-icons/io5";
 import { MapContext } from "../../Base";
 
 // import XYZ from "ol/source/XYZ";
@@ -9,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 export const RasterLayer = ({ rasterObj }) => {
     const ctx = useContext(MapContext);
     const map = ctx?.map;
+    const setRasterList = ctx?.setRasterList;
     const [layer, setLayer] = useState(null)
     const [opacity, setOpacity] = useState(1)
     const [max, setMax] = useState(100)
@@ -49,7 +51,7 @@ export const RasterLayer = ({ rasterObj }) => {
                 normalize: false,
 
             })
-            const layer = new TileLayer({
+            const _layer = new TileLayer({
                 source: source,
                 maxZoom: 22,
                 minZoom: 8,
@@ -79,12 +81,21 @@ export const RasterLayer = ({ rasterObj }) => {
                     // ],
                 },
             });
-            setLayer(layer)
-            map?.addLayer(layer)
+            _layer.id = rasterObj.id
+            setLayer(_layer)
+            map?.addLayer(_layer)
             let v = await source.getView()
             map.getView().setCenter(v.center)
         }
-        init()
+
+        let existingLyrs = []
+        map?.getLayers()?.forEach(l => {
+            if (l && l?.id) {
+                existingLyrs.push(l.id)
+            }
+        })
+        if (!existingLyrs.includes(rasterObj?.id))
+            init()
     }, [])
 
 
@@ -111,31 +122,45 @@ export const RasterLayer = ({ rasterObj }) => {
     };
 
     return (
-        <div style={style} ref={setNodeRef}>
-            <div className="flex align-middle">
-                <label className="inline-flex items-center checkbox-container">
-                    <input
-                        type="checkbox"
-                        id={`show-raster-${rasterObj.id}`}
-                        name={`show-shp-${rasterObj.id}`}
-                        defaultChecked
-                        onChange={handleCheckbox}
-                        className="hidden peer"
-                    />
-                    <span className="checkbox peer-checked:bg-slate-600 peer-checked:after:block"></span>
-                </label>
-                <span {...attributes} {...listeners}>{rasterObj.name}</span>
-            </div>
+        <div style={style} ref={setNodeRef} className="flex justify-between align-items">
             <div>
-                <label>
-                    <input id="opacity-input" type="range" min="1" max="255" step="1"
-                        onChange={handleOpacity}
-                        value={max}
-                    />
-                    <span id="opacity-output"
-                    ></span>
-                </label>
+                <div className="flex align-middle">
+                    <label className="inline-flex items-center checkbox-container">
+                        <input
+                            type="checkbox"
+                            id={`show-raster-${rasterObj.id}`}
+                            name={`show-raster-${rasterObj.id}`}
+                            defaultChecked
+                            onChange={handleCheckbox}
+                            className="hidden peer"
+                        />
+                        <span className="checkbox peer-checked:bg-slate-600 peer-checked:after:block"></span>
+                    </label>
+                    <span className="cursor-move" {...attributes} {...listeners}>{rasterObj.name}</span>
+                </div>
+                <div>
+                    <label>
+                        <input id="opacity-input" type="range" min="1" max="255" step="1"
+                            onChange={handleOpacity}
+                            value={max}
+                        />
+                        <span id="opacity-output"
+                        ></span>
+                    </label>
+                </div>
             </div>
+            <span className="my-auto"><IoCloseSharp className="text-2xl" onClick={() => {
+                setRasterList(prev => {
+                    map?.getLayers()?.forEach(l => {
+                        if (l && l.id == rasterObj?.id) {
+                            map.removeLayer(l);
+                        }
+                    });
+                    return prev.filter(l => {
+                        return l.id !== rasterObj.id
+                    })
+                })
+            }} /></span>
         </div>)
 
 }

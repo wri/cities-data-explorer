@@ -27,7 +27,7 @@ export default function Base() {
           <Browser />
         </div>
         <div className="flex-1 my-0 p-0 relative  bg-white grow border">
-          <TableOfContent rasterList={rasterList} />
+          <TableOfContent />
         </div>
       </div>
       <div className="flex-1 my-0 p-0 relative">
