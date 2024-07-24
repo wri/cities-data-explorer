@@ -1,1 +1,1 @@
-# cooling-cities-explorer
+# cities-data-explorer
