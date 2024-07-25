@@ -31,7 +31,7 @@ body {
 
 @layer components {
   .checkbox-container {
-    @apply block relative pl-8 cursor-pointer;
+    @apply block relative pl-4 cursor-pointer;
   }
 
   .checkbox {

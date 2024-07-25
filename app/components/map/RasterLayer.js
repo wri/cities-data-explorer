@@ -1,3 +1,4 @@
+import { IoMdEye } from "react-icons/io";
 import { IoCloseSharp } from "react-icons/io5";
 import { MapContext } from "../../Base";
 
@@ -124,7 +125,7 @@ export const RasterLayer = ({ rasterObj }) => {
     return (
         <div style={style} ref={setNodeRef} className="flex justify-between align-items">
             <div>
-                <div className="flex align-middle">
+                <div className="flex align-middle gap-4">
                     <label className="inline-flex items-center checkbox-container">
                         <input
                             type="checkbox"
@@ -136,6 +137,13 @@ export const RasterLayer = ({ rasterObj }) => {
                         />
                         <span className="checkbox peer-checked:bg-slate-600 peer-checked:after:block"></span>
                     </label>
+                    <span className="my-auto cursor-pointer"><IoMdEye className="text-lg" onClick={() => {
+                        async function zoomToLayer() {
+                            let v = await layer.getSource().getView()
+                            map.getView().setCenter(v.center)
+                        }
+                        zoomToLayer()
+                    }} /></span>
                     <span className="cursor-move" {...attributes} {...listeners}>{rasterObj.name}</span>
                 </div>
                 <div>
