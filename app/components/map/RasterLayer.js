@@ -5,8 +5,6 @@ import { MapContext } from "../../Base";
 // import XYZ from "ol/source/XYZ";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import TileLayer from 'ol/layer/WebGLTile.js';
-import GeoTIFFSource from 'ol/source/GeoTIFF.js';
 import { useContext, useEffect, useState } from "react";
 export const RasterLayer = ({ rasterObj }) => {
     const ctx = useContext(MapContext);
@@ -40,63 +38,6 @@ export const RasterLayer = ({ rasterObj }) => {
     }
 
     useEffect(() => {
-        async function init() {
-            let url = `https://${process.env.NEXT_PUBLIC_BUCKET}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/` + rasterObj.path
-            const source = new GeoTIFFSource({
-                sources: [
-                    {
-                        nodata: 0,
-                        url: url
-                    },
-                ],
-                normalize: false,
-
-            })
-            const _layer = new TileLayer({
-                source: source,
-                maxZoom: 22,
-                minZoom: 8,
-                cacheSize: 512,
-                style: {
-                    variables: getVariables(),
-                    color: [
-                        'case',
-                        ['==', ['band', 2], 0],
-                        '#00000000',
-                        [
-                            'array',
-                            ['/', ['band', ['var', 'red']], ['var', 'redMax']],
-                            ['/', ['band', ['var', 'green']], ['var', 'greenMax']],
-                            ['/', ['band', ['var', 'blue']], ['var', 'blueMax']],
-                            1,
-                        ]
-                    ],
-                    // variables: getVariables(),
-                    // color: [
-                    //     'array',
-                    //     ['/', ['band', ['var', 'red']], ['var', 'redMax']],
-                    //     ['/', ['band', ['var', 'green']], ['var', 'greenMax']],
-                    //     ['/', ['band', ['var', 'blue']], ['var', 'blueMax']],
-                    //     // ['/', ['band', 4], 0],
-                    //     1
-                    // ],
-                },
-            });
-            _layer.id = rasterObj.id
-            setLayer(_layer)
-            map?.addLayer(_layer)
-            let v = await source.getView()
-            map.getView().setCenter(v.center)
-        }
-
-        let existingLyrs = []
-        map?.getLayers()?.forEach(l => {
-            if (l && l?.id) {
-                existingLyrs.push(l.id)
-            }
-        })
-        if (!existingLyrs.includes(rasterObj?.id))
-            init()
     }, [])
 
 
@@ -109,17 +50,6 @@ export const RasterLayer = ({ rasterObj }) => {
     const handleOpacity = (e) => {
         setMax(parseInt(e.target.value))
         layer.updateStyleVariables(getVariables());
-        // let sf = layer.getSource().sourceInfo_[0]
-        // layer.getSource().sourceInfo_ = [{ ...sf, min: 1, max: 7 }]
-        // // layer.getSource().updateParams({ "min": 1, "max": 7 })
-        // layer.unvrender();
-        // layer.render();
-        // layer.getSource().refresh();
-        // console.log(sf.getAttributions())
-        // layer.source.min = 10
-        // let opacity = e.target.value;
-        // layer.setOpacity(parseFloat(opacity));
-        // setOpacity(parseFloat(opacity))
     };
 
     return (
