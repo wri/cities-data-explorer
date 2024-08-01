@@ -24,19 +24,6 @@ export const RasterLayer = ({ rasterObj }) => {
         transition,
     };
 
-    function getVariables() {
-        // const variables = {};
-        // for (const channel of channels) {
-        //   const selector = document.getElementById(channel);
-        //   variables[channel] = parseInt(selector.value, 10);
-
-        //   const inputId = `${channel}Max`;
-        //   const input = document.getElementById(inputId);
-        //   variables[inputId] = parseInt(input.value, 10);
-        // }
-        return { "redMax": max, "greenMax": max, "blueMax": max, "red": 1, "green": 1, "blue": 1 };
-    }
-
     useEffect(() => {
     }, [])
 
@@ -49,7 +36,6 @@ export const RasterLayer = ({ rasterObj }) => {
 
     const handleOpacity = (e) => {
         setMax(parseInt(e.target.value))
-        layer.updateStyleVariables(getVariables());
     };
 
     return (
@@ -68,13 +54,8 @@ export const RasterLayer = ({ rasterObj }) => {
                         <span className="checkbox peer-checked:bg-slate-600 peer-checked:after:block"></span>
                     </label>
                     <span className="my-auto cursor-pointer"><IoMdEye className="text-lg" onClick={() => {
-                        async function zoomToLayer() {
-                            let v = await layer.getSource().getView()
-                            map.getView().setCenter(v.center)
-                        }
-                        zoomToLayer()
                     }} /></span>
-                    <span className="cursor-move" {...attributes} {...listeners}>{rasterObj.name}</span>
+                    <span className="cursor-move" {...attributes} {...listeners}>{rasterObj?.fields?.Name}</span>
                 </div>
                 <div>
                     <label>
