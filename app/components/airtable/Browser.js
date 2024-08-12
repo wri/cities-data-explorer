@@ -17,6 +17,7 @@ export function Browser() {
                     "Authorization": `Bearer ${process.env.NEXT_PUBLIC_AIRTABLE_TOKEN}`
                 }
             });
+            console.log(res.data.records)
             setData(res.data.records)
         }
         handler()
