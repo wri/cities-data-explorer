@@ -11,7 +11,7 @@ export default function File({ file }) {
     return (
         <div className="hover:cursor-pointer">
             <span onClick={() => { setRasterList(prev => [...prev, { ...file, id: uuidv4() }]) }} className="flex gap-2">
-                <FaRegFile />{file?.fields?.Name}</span>
+                <FaRegFile />{file?.fields?.name}</span>
         </div>
     );
 }
