@@ -10,7 +10,10 @@ import { TableOfContent } from "./components/map/TableOfContent";
 export const MapContext = createContext();
 
 export default function Base() {
-  const [rasterList, setRasterList] = useState([]);
+  const [rasterList, setRasterList] = useState([
+    { id: "1", name: "Landcover", url: "https://wri-cities-heat.s3.amazonaws.com/ZAF-Cape_town/processed/citycentre_landcover_rgb.pmtiles", type: "raster", visibility: "visible", opacity: 100 },
+    { id: "2", name: "UTCI", url: "https://wri-cities-heat.s3.amazonaws.com/ZAF-Cape_town/processed/utci/UTCI_2022_22_1200.pmtiles", type: "raster", visibility: "visible", opacity: 100 }
+  ]);
   const [map, setMap] = useState();
 
   return (
