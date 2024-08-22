@@ -40,7 +40,9 @@ function Map() {
         >
             {rasterList.map((r, i) => {
                 if (r.type == 'vector') {
-                    return
+                    return <Source key={r.id} id={`source-${r.id}`} type={r.type} url={`pmtiles://${r.url}`}>
+                        <Layer id={`layer-${r.id}`} type={r.type} source={`source-${r.id}`} source-layer={`source-${r.id}`} layout={{ visibility: r.visibility }} paint={{ "raster-opacity": r.opacity / 100 }} />
+                    </Source>
                 }
                 return <Source key={r.id} id={`source-${r.id}`} type={r.type} url={`pmtiles://${r.url}`}>
                     <Layer id={`layer-${r.id}`} type={r.type} source={`source-${r.id}`} layout={{ visibility: r.visibility }} paint={{ "raster-opacity": r.opacity / 100 }} />
