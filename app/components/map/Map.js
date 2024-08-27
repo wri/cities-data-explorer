@@ -31,7 +31,7 @@ function Map() {
         }
     }, []);
 
-
+    console.log(rasterList)
     return (
         <RMap
             mapStyle="https://api.maptiler.com/maps/dataviz/style.json?key=ur6Yh3ULc6QjatOYBgln"
@@ -39,12 +39,7 @@ function Map() {
 
         >
             {rasterList.map((r, i) => {
-                if (r.type == 'vector') {
-                    return <Source key={r.id} id={`source-${r.id}`} type={r.type} url={`pmtiles://${r.url}`}>
-                        <Layer id={`layer-${r.id}`} type={'fill'} source={`source-${r.id}`} source-layer={r.name.toLowerCase()} layout={{ visibility: r.visibility }} paint={{ "fill-opacity": r.opacity / 100 }} />
-                    </Source>
-                }
-                return <Source key={r.id} id={`source-${r.id}`} type={r.type} url={`pmtiles://${r.url}`}>
+                return <Source key={r.id} id={`source-${r.id}`} type={r.type} tiles={[r.url]} tile-size={256}>
                     <Layer id={`layer-${r.id}`} type={r.type} source={`source-${r.id}`} layout={{ visibility: r.visibility }} paint={{ "raster-opacity": r.opacity / 100 }} />
                 </Source>
             })
