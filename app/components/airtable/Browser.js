@@ -17,11 +17,11 @@ export function Browser() {
                     "Authorization": `Bearer ${process.env.NEXT_PUBLIC_AIRTABLE_TOKEN}`
                 }
             });
-            console.log(res.data.records)
             setData(res.data.records)
         }
         handler()
     }, [])
+
 
     return (<div className='text-black flex flex-col px-4 gap-4 pt-2'>
         {data.map((f, i) => {

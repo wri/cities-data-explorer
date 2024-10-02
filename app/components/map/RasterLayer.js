@@ -5,12 +5,11 @@ import { MapContext } from "../../Base";
 // import XYZ from "ol/source/XYZ";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 export const RasterLayer = ({ rasterObj }) => {
     const ctx = useContext(MapContext);
     const map = ctx?.map;
     const setRasterList = ctx?.setRasterList;
-    const [layer, setLayer] = useState(null)
     const [opacity, setOpacity] = useState(1)
     const [max, setMax] = useState(100)
     const { attributes, listeners, setNodeRef, transform, transition } =
@@ -24,18 +23,33 @@ export const RasterLayer = ({ rasterObj }) => {
         transition,
     };
 
-    useEffect(() => {
-    }, [])
-
 
     const handleCheckbox = (e) => {
-        let checked = e.target.checked;
-        layer.setVisible(checked);
+        let visibility = "none";
+        if (e.target.checked) visibility = "visible"
+
+        setRasterList(prev => {
+            let newList = []
+            prev.forEach(l => {
+                if (l.id == rasterObj.id) l.visibility = visibility
+                newList.push(l)
+            })
+            return newList
+        })
     };
 
 
     const handleOpacity = (e) => {
         setMax(parseInt(e.target.value))
+
+        setRasterList(prev => {
+            let newList = []
+            prev.forEach(l => {
+                if (l.id == rasterObj.id) l.opacity = parseInt(e.target.value)
+                newList.push(l)
+            })
+            return newList
+        })
     };
 
     return (
@@ -55,11 +69,11 @@ export const RasterLayer = ({ rasterObj }) => {
                     </label>
                     <span className="my-auto cursor-pointer"><IoMdEye className="text-lg" onClick={() => {
                     }} /></span>
-                    <span className="cursor-move" {...attributes} {...listeners}>{rasterObj?.fields?.Name}</span>
+                    <span className="cursor-move" {...attributes} {...listeners}>{rasterObj?.name}</span>
                 </div>
                 <div>
                     <label>
-                        <input id="opacity-input" type="range" min="1" max="255" step="1"
+                        <input id="opacity-input" type="range" min="1" max="100" step="1"
                             onChange={handleOpacity}
                             value={max}
                         />
@@ -70,11 +84,6 @@ export const RasterLayer = ({ rasterObj }) => {
             </div>
             <span className="my-auto"><IoCloseSharp className="text-2xl" onClick={() => {
                 setRasterList(prev => {
-                    map?.getLayers()?.forEach(l => {
-                        if (l && l.id == rasterObj?.id) {
-                            map.removeLayer(l);
-                        }
-                    });
                     return prev.filter(l => {
                         return l.id !== rasterObj.id
                     })

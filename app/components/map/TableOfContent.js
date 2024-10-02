@@ -17,10 +17,10 @@ import { MapContext } from "../../Base";
 import { RasterLayer } from "./RasterLayer";
 
 export const TableOfContent = () => {
-    const [sortedLayers, setSortedLayers] = useState([]);
     const [activeLayerId, setActiveLayerId] = useState(null);
     const ctx = useContext(MapContext);
     const rasterList = ctx?.rasterList
+    const setRasterList = ctx?.setRasterList
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -37,7 +37,7 @@ export const TableOfContent = () => {
         const sorted = rasterList.sort(
             (a, b) => a.position - b.position
         );
-        setSortedLayers(sorted);
+        setRasterList(sorted);
     }, [rasterList]);
 
     function handleDragStart(event) {
@@ -48,7 +48,7 @@ export const TableOfContent = () => {
         const { active, over } = event;
         if (active && over) {
             if (active?.id !== over?.id) {
-                setSortedLayers((prev) => {
+                setRasterList((prev) => {
                     const oldIndex = prev.findIndex(
                         (item) =>
                             item.id === active?.id
@@ -71,12 +71,12 @@ export const TableOfContent = () => {
             onDragEnd={handleDragEnd}
         >
             <SortableContext
-                items={sortedLayers.map((item) => {
+                items={rasterList.map((item) => {
                     return item.id;
                 })}
                 strategy={verticalListSortingStrategy}
             >
-                {sortedLayers.map((r, i) => {
+                {rasterList.map((r, i) => {
                     return <RasterLayer
                         key={`tbc-${i}-${r.id}`}
                         id={`tbc-${i}-${r.id}`}
